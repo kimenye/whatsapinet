@@ -2,67 +2,42 @@
 	
 	require_once 'whatsprot.class.php';
 
-	// $username = "254723944369"; 
-	// $username = "254727550098"; 
-	
-	// $password = "Z9bNfsdFtRLHXG22KtKB/hfUFJM=";
-	// $password = "2wVCTiXn3CW5md4TAgGOIMnyskk=";
-	
-	// $nickname = "#OngairFootball";
-	$nickname = "Ongair";
-	
-	// $identity = "%87%01%184%a6%07%1b%24j%e6%02%11p%ff%d1%c8%f4h%fb%02";
-	// $identity = "%e3%das%0d%b2%13%23f%8b%abib%08%d44%a3%f0%f0%0c%f3";
-	
-	// $target = "254705866564";
+	$username = $argv[1];
+	$password = $argv[2];
+	$nickname = $argv[3];
+	$identity = $argv[4];
+	$method = $argv[5];
+	$args = $argv[6];
+	$targets = $argv[7];
+
+	echo "Username: ".$username."\r\n";
+	echo "Password: ".$password."\r\n";
+	echo "Nickname: ".$nickname."\r\n";
+	echo "Identity: ".$identity."\r\n";
+	echo "Method: ".$method."\r\n";
+	echo "Args: ".$args."\r\n";
 
 	$w = new WhatsProt($username, $identity, $nickname, true);
 	$w->connect();
 	$w->loginWithPassword($password);
 
-	// $w->sendStatusUpdate("#OngairFootball - Fantasy Football on WhatsApp");
-
-	// $receipients = array("254705866564");
-
-	// $w->sendBroadcastImage($receipients, "/Users/trevor/Desktop/stadium.jpg", false);
-	// $w->sendBroadcastMessage($receipients, "Does this work?");
-
-	// class ProcessNode
-	// {
-	//     protected $wp = false;
-	//     protected $target = false;
-
-	//     public function __construct($wp, $target)
-	//     {
-	//         $this->wp = $wp;
-	//         $this->target = $target;
-	//     }
-
-	//     /**
-	//      * @param ProtocolNode $node
-	//      */
-	//     public function process($node)
-	//     {
-	//         // Example of process function, you have to guess a number (psss it's 5)
-	//         // If you guess it right you get a gift
-	//         $text = $node->getChild('body');
-	//         $text = $text->getData();
-
-	//         // print_r 
-
-	//         $this->wp->sendMessage($this->target, "Thank you for this message");
-	// 	}
-	// }
-
-	// $pn = new ProcessNode($w, $target);
-	// $w->setNewMessageBind($pn);
-
-	// while (1) {
-	//     $w->pollMessages();
-	//     $msgs = $w->getMessages();
-	//     foreach ($msgs as $m) {
-	//         # process inbound messages
-	//         //print($m->NodeString("") . "\n");
-	//     }
-	// }
+	if ($method == "sendStatusUpdate") {
+		echo "About to send status update.\r\n";
+		$w->sendStatusUpdate($args);
+	}
+	elseif ($method == "sendProfilePicture") {
+		echo "About to send profile picture.\r\n";
+		$w->sendSetProfilePicture($args);
+	}
+	elseif ($method == "broadcastMessage") {
+		$targets = explode(",", $targets);
+		echo "About to broadcast a message.\r\n".print_r($targets)."\r\n";
+		$w->sendBroadcastMessage($targets, $args);
+	}
+	elseif ($method == "sendBroadcastImage") {
+		$targets = explode(",", $targets);
+		$w->sendBroadcastImage($targets, $args, false);
+	}
+	
+	sleep(5);
 ?>
